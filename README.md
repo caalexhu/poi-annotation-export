@@ -1,6 +1,6 @@
 自定义注解实现Excel 导出
 ======================
-## 1. 注解定义,定义导出Excel的字段
+### 1. 注解定义,定义导出Excel的字段
 ```java
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -21,7 +21,7 @@ public @interface PoiExportField {
     HorizontalAlignment align() default HorizontalAlignment.LEFT;
 }
 ```
-## 2. 实体类，使用注解定义导出字段，不导出的字段不用加注解
+### 2. 实体类，使用注解定义导出字段，不导出的字段不用加注解
 ```java
 @Data
 public class OrderVO {
@@ -251,11 +251,13 @@ public class PoiExportUtil {
         for (Field field : subGroupFields) {
             try {
                 field.setAccessible(true);
-                Object value = field.get(data);
+                String getterName = "get" + Character.toUpperCase(field.getName().charAt(0)) + field.getName().substring(1);
+                Method getterMethod = data.getClass().getMethod(getterName);
+                Object value = getterMethod.invoke(data);
                 if (value != null) {
                     subGroupValue.append(value.toString()).append(" ");
                 }
-            } catch (IllegalAccessException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
