@@ -221,11 +221,13 @@ public class PoiExportUtil {
         for (Field field : subGroupFields) {
             try {
                 field.setAccessible(true);
-                Object value = field.get(data);
+                String getterName = "get" + Character.toUpperCase(field.getName().charAt(0)) + field.getName().substring(1);
+                Method getterMethod = data.getClass().getMethod(getterName);
+                Object value = getterMethod.invoke(data);
                 if (value != null) {
                     subGroupValue.append(value.toString()).append(" ");
                 }
-            } catch (IllegalAccessException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

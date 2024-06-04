@@ -4,10 +4,7 @@ package org.example.util;
 import org.example.model.vo.OrderVO;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -23,7 +20,12 @@ public class PoiExportUtilTest {
     public void exportToExcel() {
         PoiExportUtil poiExportUtil = new PoiExportUtil();
         List<OrderVO> orderVOList = generateOrders();
-        poiExportUtil.exportToExcel(orderVOList, "order.xlsx");
+        Map<String, List<OrderVO>> ordersByCountry = orderVOList.stream()
+                .collect(Collectors.groupingBy(OrderVO::getOrderCountry));
+        ordersByCountry.forEach((country, orders) -> {
+            System.out.println("Country: " + country+ " Orders: " + orders.size());
+        });
+       poiExportUtil.exportToExcel(orderVOList, "order.xlsx");
     }
 
     public List<OrderVO> generateOrders() {
